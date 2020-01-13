@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using API.Models;
 
 namespace API.Controllers
 {
@@ -13,9 +14,9 @@ namespace API.Controllers
     {
         // GET: api/Movie
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Movie> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new Movie[] { new Movie { Director = "Me", Name = "Memento", Year = 2013 } };
         }
 
         // GET: api/Movie/5
