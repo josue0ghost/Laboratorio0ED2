@@ -4,16 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using API.Models;
+using System.Collections.Generic;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
     {
-        private static readonly Movie[] movies = new[]
-        {
+        private List<Movie> MovieList = new List<Movie> {
             new Movie {Id = 1, Director = "Me", Name = "Memento", Year = 2013 },
             new Movie{Id = 2, Director = "Cristopher Nolan", Name = "Batman", Year = 2010},
             new Movie{Id = 3, Director = "D1", Name = "N1", Year = 2000},
@@ -28,9 +29,9 @@ namespace API.Controllers
 
         // GET: api/Movie
         [HttpGet]
-        public IEnumerable<string> Get()
+        public Movie[] Get()
         {
-            return new[] { "value", "value1" };
+            return MovieList.ToArray();
         }
 
         // GET: api/Movie/5
@@ -38,6 +39,13 @@ namespace API.Controllers
         public string Get(int id)
         {
             return "value";
+        }
+
+        private readonly ILogger<MovieController> _logger;
+
+        public MovieController(ILogger<MovieController> logger)
+        {
+            _logger = logger;
         }
 
         // POST: api/Movie
