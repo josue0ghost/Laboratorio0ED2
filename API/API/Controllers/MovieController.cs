@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using API.Models;
-using System.Collections.Generic;
 
 namespace API.Controllers
 {
@@ -29,9 +28,9 @@ namespace API.Controllers
 
         // GET: api/Movie
         [HttpGet]
-        public Movie[] Get()
+        public List<Movie> Get()
         {
-            return MovieList.ToArray();
+            return MovieList;
         }
 
         // GET: api/Movie/5
