@@ -23,6 +23,7 @@ namespace clienteHTTP
         }
         static void Main(string[] args)
         {
+            //CrearPelicula();
             RunAsync().GetAwaiter().GetResult();
         }
 
@@ -51,6 +52,11 @@ namespace clienteHTTP
 
             
             Console.ReadLine();
+        }
+
+        static void CrearPelicula() {
+            Movie ingresar = new Movie { Id = 11, Name = "UP", Director = "Eduardo", Year = 2010 };
+            HttpResponseMessage responsePost = client.PostAsJsonAsync("https://localhost:44318/movie", ingresar).Result;
         }
     }
 }

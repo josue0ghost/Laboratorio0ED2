@@ -30,7 +30,20 @@ namespace API.Controllers
         [HttpGet]
         public List<Movie> Get()
         {
-            return MovieList;
+            List<Movie> aux = new List<Movie>();
+            if (MovieList.Count >= 10)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    aux.Add(MovieList.ElementAt<Movie>(MovieList.Count - i - 1));
+                }
+
+                return aux;
+            }
+            else
+            {
+                return MovieList;
+            }            
         }
 
         // GET: api/Movie/5
@@ -49,8 +62,9 @@ namespace API.Controllers
 
         // POST: api/Movie
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Movie value)
         {
+            MovieList.Add(value);
         }
 
         // PUT: api/Movie/5
