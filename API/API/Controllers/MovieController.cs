@@ -13,44 +13,52 @@ namespace API.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        private List<Movie> MovieList = new List<Movie> {
-            new Movie {Id = 1, Director = "Me", Name = "Memento", Year = 2013 },
-            new Movie{Id = 2, Director = "Cristopher Nolan", Name = "Batman", Year = 2010},
-            new Movie{Id = 3, Director = "D1", Name = "N1", Year = 2000},
-            new Movie{Id = 4, Director = "D2", Name = "N2", Year = 2001},
-            new Movie{Id = 5, Director = "D3", Name = "N3", Year = 2002},
-            new Movie{Id = 6, Director = "D4", Name = "N4", Year = 2003},
-            new Movie{Id = 7, Director = "D5", Name = "N5", Year = 2004},
-            new Movie{Id = 8, Director = "D6", Name = "N6", Year = 2005},
-            new Movie{Id = 9, Director = "D7", Name = "N7", Year = 2006},
-            new Movie{Id = 10, Director = "DA1", Name = "NA1", Year = 2007}
-        };
+        
 
         // GET: api/Movie
         [HttpGet]
         public List<Movie> Get()
         {
             List<Movie> aux = new List<Movie>();
-            if (MovieList.Count >= 10)
+            int MoviesCount = Data.Instance.Movies.Count;
+            if (MoviesCount > 0)
             {
-                for (int i = 0; i < 10; i++)
+                if (MoviesCount < 10)
                 {
-                    aux.Add(MovieList.ElementAt<Movie>(MovieList.Count - i - 1));
-                }
+                    for (int i = 0; i < MoviesCount; i++)
+                    {
+                        aux.Add(Data.Instance.Movies.Pop());
+                    }
 
-                return aux;
+                    for (int i = MoviesCount-1; i >= 0; i--)
+                    {
+                        Data.Instance.Movies.Push(aux[i]);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        aux.Add(Data.Instance.Movies.Pop());
+                    }
+
+                    for (int i = 9; i >= 0; i--)
+                    {
+                        Data.Instance.Movies.Push(aux[i]);
+                    }
+                }                
             }
-            else
-            {
-                return MovieList;
-            }            
+            return aux;
         }
 
         // GET: api/Movie/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public Movie Get(int id)
         {
-            return "value";
+            if (id <= Data.Instance.Movies.Count())
+                return Data.Instance.Movies.ElementAt(id);
+
+            return null;
         }
 
         private readonly ILogger<MovieController> _logger;
@@ -62,9 +70,13 @@ namespace API.Controllers
 
         // POST: api/Movie
         [HttpPost]
-        public void Post([FromBody] Movie value)
+        public Movie Post([FromBody] Movie value)
         {
-            MovieList.Add(value);
+            if (value.Id == 0)            
+                value.Id = Data.Instance.Movies.Count() + 1;
+            
+            Data.Instance.Movies.Push(value);
+            return Data.Instance.Movies.Peek();
         }
 
         // PUT: api/Movie/5

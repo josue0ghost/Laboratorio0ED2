@@ -23,8 +23,8 @@ namespace clienteHTTP
         }
         static void Main(string[] args)
         {
-            //CrearPelicula();
-            RunAsync().GetAwaiter().GetResult();
+            RunAsync().Wait();
+            
         }
 
         static async Task<IEnumerable<Movie>> getPeliculas(string path) {            
@@ -36,27 +36,45 @@ namespace clienteHTTP
             return await webResponse.Content.ReadAsAsync<List<Movie>>();
         }
 
-        static async Task RunAsync() {            
+        static async Task RunAsync() {
             //Console.WriteLine("Hello World!");            
             client.BaseAddress = new Uri("https://localhost:44318/");
             client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));          
+
+            Console.WriteLine("POST");
+            await CreateMovieAsync();
+            await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+            //await CreateMovieAsync();
+
+            Console.WriteLine("GET");
             var peliculas = await getPeliculas("https://localhost:44318/movie");
-
             Console.WriteLine("Id:" + "\t" + "Nombre:" + "\t" + "Director:" + "\t" + "Año:");
-
             foreach (var item in peliculas)
             {                
                 Console.WriteLine(item.Id + "\t" + item.Name + "\t" + item.Director +"\t" + item.Year);
             }
-
             
             Console.ReadLine();
         }
 
-        static void CrearPelicula() {
-            Movie ingresar = new Movie { Id = 11, Name = "UP", Director = "Eduardo", Year = 2010 };
-            HttpResponseMessage responsePost = client.PostAsJsonAsync("https://localhost:44318/movie", ingresar).Result;
+        static async Task CreateMovieAsync()
+        {
+            Movie ingresar = new Movie { Name = "UP", Director = "Eduardo", Year = 2010 };
+            var responsePost = await client.PostAsJsonAsync("https://localhost:44318/movie", ingresar);
+            if (responsePost.IsSuccessStatusCode)
+            {
+                Uri movieUrl = responsePost.Headers.Location;
+                Console.WriteLine(movieUrl);
+            }
         }
     }
 }
